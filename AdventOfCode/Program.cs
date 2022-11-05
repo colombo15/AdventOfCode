@@ -1,2 +1,4 @@
-﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
+﻿using AdventOfCode;
+
+Span<string> response = await PuzzleInputService.GetPuzzleInput();
+var moo = 2;

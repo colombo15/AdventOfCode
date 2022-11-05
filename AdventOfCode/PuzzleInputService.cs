@@ -1,27 +1,37 @@
-﻿using System.Net;
+﻿using System.Configuration;
+using System.Net;
 
 namespace AdventOfCode
 {
     internal static class PuzzleInputService
     {
-        private static readonly string _baseAddress = "https://adventofcode.com/";
+        private static readonly string BASE_ADDRESS = "https://adventofcode.com/";
 
-        public static async Task<IEnumerable<string>> GetPuzzleInput(int year, int day)
+        public static async Task<string[]> GetPuzzleInput()
         {
-            var baseAddress = new Uri(_baseAddress);
+            var year = int.Parse(ConfigurationManager.AppSettings.Get("Year")!);
+            var day = int.Parse(ConfigurationManager.AppSettings.Get("Day")!);
+
+            return await GetPuzzleInput(year, day);
+        }
+
+        private static async Task<string[]> GetPuzzleInput(int year, int day)
+        {
+            var authToken = ConfigurationManager.AppSettings.Get("AuthToken")!;
+
+            var baseAddress = new Uri(BASE_ADDRESS);
             var cookieContainer = new CookieContainer();
-            var oauthToken = OAuthSessionToken.AOC_OAUTH_TOKEN;
 
             using var handler = new HttpClientHandler() { CookieContainer = cookieContainer };
             using var client = new HttpClient(handler) { BaseAddress = baseAddress };
 
-            cookieContainer.Add(baseAddress, new Cookie("session", oauthToken));
+            cookieContainer.Add(baseAddress, new Cookie("session", authToken));
 
             var response = await client.GetAsync($"{year}/day/{day}/input");
             response.EnsureSuccessStatusCode();
 
             var input = await response.Content.ReadAsStringAsync();
-            var retval = input.TrimEnd('\n').Split('\n');
+            var retval = input.Split('\n', StringSplitOptions.RemoveEmptyEntries);
 
             return retval;
         }
