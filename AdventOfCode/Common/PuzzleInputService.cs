@@ -1,21 +1,21 @@
 ﻿using System.Configuration;
 using System.Net;
 
-namespace AdventOfCode
+namespace AdventOfCode.Common
 {
     internal static class PuzzleInputService
     {
         private static readonly string BASE_ADDRESS = "https://adventofcode.com/";
 
-        public static async Task<string[]> GetPuzzleInput()
+        public static async Task<string[]> DownloadPuzzleInput()
         {
             var year = int.Parse(ConfigurationManager.AppSettings.Get("Year")!);
             var day = int.Parse(ConfigurationManager.AppSettings.Get("Day")!);
 
-            return await GetPuzzleInput(year, day);
+            return await DownloadPuzzleInput(year, day);
         }
 
-        private static async Task<string[]> GetPuzzleInput(int year, int day)
+        public static async Task<string[]> DownloadPuzzleInput(int year, int day)
         {
             var authToken = ConfigurationManager.AppSettings.Get("AuthToken")!;
 
@@ -34,6 +34,11 @@ namespace AdventOfCode
             var retval = input.Split('\n', StringSplitOptions.RemoveEmptyEntries);
 
             return retval;
+        }
+
+        public static string[] ReadPuzzleInput(string fileName)
+        {
+            return File.ReadLines(fileName).ToArray();
         }
     }
 }
