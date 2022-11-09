@@ -5,10 +5,6 @@ namespace AdventOfCode.Puzzles._2021.Day01
     internal sealed class Solution : ISolution
     {
         private int count = 0;
-        public void Reset()
-        {
-            count = 0;
-        }
 
         public void PartOne(string[] input)
         {

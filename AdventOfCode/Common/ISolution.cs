@@ -13,6 +13,5 @@ namespace AdventOfCode.Common
         void Print();
         bool IsPartOneCorrect();
         bool IsPartTwoCorrect();
-        void Reset();
     }
 }

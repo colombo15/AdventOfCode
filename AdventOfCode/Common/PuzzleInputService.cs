@@ -9,10 +9,12 @@ namespace AdventOfCode.Common
 
         public static async Task<string[]> DownloadPuzzleInput()
         {
-            var year = int.Parse(ConfigurationManager.AppSettings.Get("Year")!);
-            var day = int.Parse(ConfigurationManager.AppSettings.Get("Day")!);
+            var year = ConfigurationManager.AppSettings.Get("Year");
+            var day = ConfigurationManager.AppSettings.Get("Day");
 
-            return await DownloadPuzzleInput(year, day);
+            if (year == null || day == null) return Array.Empty<string>();
+
+            return await DownloadPuzzleInput(int.Parse(year), int.Parse(day));
         }
 
         public static async Task<string[]> DownloadPuzzleInput(int year, int day)

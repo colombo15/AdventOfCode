@@ -9,13 +9,6 @@ namespace AdventOfCode.Puzzles._2021.Day02
         private int pos = 0;
         private int aim = 0;
 
-        public void Reset()
-        {
-            depth = 0;
-            pos = 0;
-            aim = 0;
-        }
-
         public void PartOne(string[] input)
         {
             GeneralizedSolution(input, (Cmd x) => PartOneCommands(x));

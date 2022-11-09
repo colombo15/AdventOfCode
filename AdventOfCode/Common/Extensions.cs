@@ -14,5 +14,15 @@ namespace AdventOfCode.Common
             foreach (var i in numbers) total += i;
             return total;
         }
+
+        public static uint ConvertBinaryToUInt(this string str)
+        {
+            var retval = (uint)0;
+            for(var i = 0; i < str.Length; i++)
+            {
+                retval += str[^(1 + i)] == '1' ? (uint)Math.Pow(2.0, (double)(i)) : 0;
+            }
+            return retval;
+        }
     }
 }

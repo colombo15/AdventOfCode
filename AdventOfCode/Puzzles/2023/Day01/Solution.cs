@@ -4,11 +4,6 @@ namespace AdventOfCode.Puzzles._2023.Day01
 {
     internal sealed class Solution : ISolution
     {
-        public void Reset()
-        {
-            throw new NotImplementedException();
-        }
-
         public void PartOne(string[] input)
         {
             throw new NotImplementedException();
@@ -26,12 +21,12 @@ namespace AdventOfCode.Puzzles._2023.Day01
 
         public bool IsPartOneCorrect()
         {
-            return 1 == 2;
+            return false;
         }
 
         public bool IsPartTwoCorrect()
         {
-            return 1 == 2;
+            return false;
         }
     }
 }
