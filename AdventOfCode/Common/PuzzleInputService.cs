@@ -33,9 +33,10 @@ namespace AdventOfCode.Common
             response.EnsureSuccessStatusCode();
 
             var input = await response.Content.ReadAsStringAsync();
-            var retval = input.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+            var retval = input.Split('\n').ToList();
+            retval.RemoveAt(retval.Count - 1);
 
-            return retval;
+            return retval.ToArray();
         }
 
         public static string[] ReadPuzzleInput(string fileName)
