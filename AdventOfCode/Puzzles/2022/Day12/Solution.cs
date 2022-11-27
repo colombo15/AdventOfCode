@@ -1,6 +1,6 @@
 ﻿using AdventOfCode.Common;
 
-namespace AdventOfCode.Puzzles._2023.Day01
+namespace AdventOfCode.Puzzles._2022.Day12
 {
     internal sealed class Solution : ISolution
     {
