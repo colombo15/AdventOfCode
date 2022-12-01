@@ -8,18 +8,15 @@ namespace AdventOfCode.Puzzles._2022.Day01
 
         public void PartOne(string[] input)
         {
-            var elfCalories = new List<int>() { 0 };
-            foreach (var i in input)
-            {
-                if (i == "")
-                    elfCalories.Add(0);
-                else
-                    elfCalories[^1] += int.Parse(i);
-            }
-            _result = elfCalories.OrderByDescending(x => x).First();
+            _result = GetElfCalories(input).First();
         }
 
         public void PartTwo(string[] input)
+        {
+            _result = GetElfCalories(input).Take(3).Sum();
+        }
+
+        public static IEnumerable<int> GetElfCalories(string[] input)
         {
             var elfCalories = new List<int>() { 0 };
             foreach (var i in input)
@@ -29,7 +26,7 @@ namespace AdventOfCode.Puzzles._2022.Day01
                 else
                     elfCalories[^1] += int.Parse(i);
             }
-            _result = elfCalories.OrderByDescending(x => x).Take(3).Sum();
+            return elfCalories.OrderByDescending(x => x);
         }
 
         public void Print()
