@@ -17,7 +17,7 @@ namespace AdventOfCode.Common
         [GlobalSetup]
         public async Task Setup()
         {
-            input = await PuzzleInputService.DownloadPuzzleInput();
+            input = await PuzzleInputService.ReadPuzzleInput();
         }
 
         [Benchmark]

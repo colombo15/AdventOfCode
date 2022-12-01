@@ -13,6 +13,7 @@ if (-not(Test-Path -Path $filePath -PathType Leaf)) {
 	"`t`t<add key=""Year"" value=""2022"" />" | Out-File -FilePath $filePath -Append
 	"`t`t<add key=""Day"" value=""1"" />" | Out-File -FilePath $filePath -Append
 	"`t`t<add key=""AuthToken"" value="""" />" | Out-File -FilePath $filePath -Append
+	"`t`t<add key=""Email"" value="""" />" | Out-File -FilePath $filePath -Append
 	"`t</appSettings>" | Out-File -FilePath $filePath -Append
 	"</configuration>" | Out-File -FilePath $filePath -Append
 	
