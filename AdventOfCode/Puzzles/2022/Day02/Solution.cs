@@ -1,4 +1,5 @@
 ﻿using AdventOfCode.Common;
+using System.Diagnostics;
 
 namespace AdventOfCode.Puzzles._2022.Day02
 {
@@ -12,7 +13,7 @@ namespace AdventOfCode.Puzzles._2022.Day02
             {
                 var split = item.Split(' ');
                 var oppMove = split[0][0];
-                var myMove = split[1][0];
+                var myMove = (char)(split[1][0] - 23);
                 _result += GetScore(oppMove, myMove);
             }
         }
@@ -30,24 +31,20 @@ namespace AdventOfCode.Puzzles._2022.Day02
 
         private static int GetScore(char oppMove, char myMove)
         {
-            var win = (oppMove == 'A' && myMove == 'Y') || (oppMove == 'B' && myMove == 'Z') || (oppMove == 'C' && myMove == 'X');
-            var draw = (oppMove == 'A' && myMove == 'X') || (oppMove == 'B' && myMove == 'Y') || (oppMove == 'C' && myMove == 'Z');
-            return (myMove - 87) + (win ? 6 : 0) + (draw ? 3 : 0);
+            var win = myMove - oppMove == 1 || myMove - oppMove == -2;
+            var draw = myMove - oppMove == 0;
+            return (myMove - 64) + (win ? 6 : 0) + (draw ? 3 : 0);
         }
 
         private static char GetMyMove(char oppMove, char myMove)
         {
-            switch (myMove)
+            return myMove switch
             {
-                case 'X':
-                    return oppMove == 'A' ? 'Z' : oppMove == 'B' ? 'X' : 'Y';
-                case 'Y':
-                    return oppMove == 'A' ? 'X' : oppMove == 'B' ? 'Y' : 'Z';
-                case 'Z':
-                    return oppMove == 'A' ? 'Y' : oppMove == 'B' ? 'Z' : 'X';
-                default:
-                    throw new NotImplementedException();
-            }
+                'X' => oppMove == 'A' ? 'C' : (char)(oppMove - 1),
+                'Y' => oppMove,
+                'Z' => oppMove == 'C' ? 'A' : (char)(oppMove + 1),
+                _ => throw new UnreachableException(),
+            };
         }
 
         public void Print()
