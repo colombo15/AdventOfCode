@@ -11,7 +11,9 @@ namespace AdventOfCode.Puzzles._2022.Day04
         {
             static bool lambda(int x1, int x2, int y1, int y2)
             {
-                return (y1 >= x1 && y1 <= x2 && y2 >= x1 && y2 <= x2) || (x1 >= y1 && x1 <= y2 && x2 >= y1 && x2 <= y2);
+                return 
+                    (y1 >= x1 && y1 <= x2 && y2 >= x1 && y2 <= x2) 
+                    || (x1 >= y1 && x1 <= y2 && x2 >= y1 && x2 <= y2);
             }
 
             _result = GeneralizedSolution(input, lambda);
@@ -21,7 +23,11 @@ namespace AdventOfCode.Puzzles._2022.Day04
         {
             static bool lambda(int x1, int x2, int y1, int y2)
             {
-                return (y1 >= x1 && y1 <= x2) || (y2 >= x1 && y2 <= x2) || (x1 >= y1 && x1 <= y2) || (x2 >= y1 && x2 <= y2);
+                return 
+                    (y1 >= x1 && y1 <= x2) 
+                    || (y2 >= x1 && y2 <= x2) 
+                    || (x1 >= y1 && x1 <= y2) 
+                    || (x2 >= y1 && x2 <= y2);
             }
 
             _result = GeneralizedSolution(input, lambda);
