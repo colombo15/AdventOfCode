@@ -9,19 +9,20 @@ namespace AdventOfCode.Puzzles._2022.Day05
 
         public void PartOne(string[] input)
         {
-            GeneralizedSolution(input, 9000);
+            _result = GeneralizedSolution(input, 9000);
         }
 
         public void PartTwo(string[] input)
         {
-            GeneralizedSolution(input, 9001);
+            _result = GeneralizedSolution(input, 9001);
         }
 
-        private void GeneralizedSolution(string[] input, int crateMoverModel)
+        private static string GeneralizedSolution(string[] input, int crateMoverModel)
         {
             var stacks = new List<Stack<char>>();
             var regex = @"(?:(?:\[|\s)(.)(?:\]|\s)\s?)";
             var index = 0;
+            var result = "";
 
             for (; index < input.Length; index++)
             {
@@ -62,8 +63,10 @@ namespace AdventOfCode.Puzzles._2022.Day05
 
             foreach (var stack in stacks)
             {
-                _result += stack.Peek();
+                result += stack.Peek();
             }
+
+            return result;
         }
 
         public void Print()
