@@ -27,6 +27,21 @@ namespace AdventOfCode.Common
             return File.ReadAllText(filePath).Split('\n');
         }
 
+        public static async Task<string[]> ReadPuzzleInput(int year, int day)
+        {
+            var basePath = AppDomain.CurrentDomain.BaseDirectory.Remove(AppDomain.CurrentDomain.BaseDirectory.IndexOf("bin"));
+            var dayStr = day < 10 ? "0" + day : day.ToString();
+            var filePath = $"{basePath}\\Puzzles\\{year}\\Day{dayStr}\\input.txt";
+            if (!File.Exists(filePath))
+            {
+                var input = await DownloadPuzzleInput(year, day);
+                File.Create(filePath).Close();
+                File.WriteAllText(filePath, input);
+            }
+
+            return File.ReadAllText(filePath).Split('\n');
+        }
+
         public static async Task<string> DownloadPuzzleInput(int year, int day)
         {
             var authToken = ConfigurationManager.AppSettings.Get("AuthToken")!;

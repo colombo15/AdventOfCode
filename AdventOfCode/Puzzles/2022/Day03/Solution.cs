@@ -36,7 +36,6 @@ namespace AdventOfCode.Puzzles._2022.Day03
             {
                 var common1 = new HashSet<char>();
                 var common2 = new HashSet<char>();
-                var common3 = new HashSet<char>();
 
                 foreach (var c in input[i])
                 {
@@ -53,9 +52,10 @@ namespace AdventOfCode.Puzzles._2022.Day03
 
                 foreach (var c in input[i + 2])
                 {
-                    if (common2.Contains(c) && common3.Add(c))
+                    if (common2.Contains(c))
                     {
                         _result += char.IsLower(c) ? c - 96 : c - 38;
+                        break;
                     }
                 }
             }
