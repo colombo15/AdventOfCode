@@ -5,20 +5,21 @@ namespace AdventOfCode.Puzzles._2022.Day05
 {
     internal sealed class Solution : ISolution
     {
-        public string _result;
+        public string? _result;
 
         public void PartOne(string[] input)
         {
-            var regex = @"(?:(?:\[|\s)(.)(?:\]|\s)\s?)";
             var stacks = new List<Stack<char>>();
-            var index = 0;
+            var regex = @"(?:(?:\[|\s)(.)(?:\]|\s)\s?)";
+            int index;
 
             for (index = 0; index < input.Length; index++)
             {
-                if (input[index].StartsWith(" 1")) break;
+                if (input[index].StartsWith(" 1") || input[index] == " ") continue;
+                if (input[index].StartsWith("move")) break;
 
                 var match = Regex.Matches(input[index], regex);
-                
+
                 for (var i = 0; i < match.Count; i++)
                 {
                     if (stacks.Count <= i) stacks.Add(new Stack<char>());
@@ -27,23 +28,17 @@ namespace AdventOfCode.Puzzles._2022.Day05
                 }
             }
 
-            stacks = stacks.Select(stack => new Stack<char>(stack)).ToList();
-            index += 2;
+            stacks = stacks.Select(stack => new Stack<char>(stack)).ToList(); // Reverse stacks
             regex = @"move (\d+) from (\d+) to (\d+)";
 
             for (;index < input.Length; index++)
             {
                 var match = Regex.Match(input[index], regex);
-                var x1 = int.Parse(match.Groups[1].Value);
-                var x2 = int.Parse(match.Groups[2].Value);
-                var x3 = int.Parse(match.Groups[3].Value);
+                var count = int.Parse(match.Groups[1].Value);
+                var i1 = int.Parse(match.Groups[2].Value) - 1;
+                var i2 = int.Parse(match.Groups[3].Value) - 1;
 
-                while (x1 > 0)
-                {
-                    var p = stacks[x2 - 1].Pop();
-                    stacks[x3 - 1].Push(p);
-                    x1--;
-                }
+                while (count-- > 0) stacks[i2].Push(stacks[i1].Pop());
             }
 
             foreach(var stack in stacks)
@@ -54,13 +49,14 @@ namespace AdventOfCode.Puzzles._2022.Day05
 
         public void PartTwo(string[] input)
         {
-            var regex = @"(?:(?:\[|\s)(.)(?:\]|\s)\s?)";
             var stacks = new List<Stack<char>>();
+            var regex = @"(?:(?:\[|\s)(.)(?:\]|\s)\s?)";
             var index = 0;
 
-            for (index = 0; index < input.Length; index++)
+            for (; index < input.Length; index++)
             {
-                if (input[index].StartsWith(" 1")) break;
+                if (input[index].StartsWith(" 1") || input[index] == " ") continue;
+                if (input[index].StartsWith("move")) break;
 
                 var match = Regex.Matches(input[index], regex);
 
@@ -72,28 +68,19 @@ namespace AdventOfCode.Puzzles._2022.Day05
                 }
             }
 
-            stacks = stacks.Select(stack => new Stack<char>(stack)).ToList();
-            index += 2;
+            stacks = stacks.Select(stack => new Stack<char>(stack)).ToList(); // Reverse Stack
             regex = @"move (\d+) from (\d+) to (\d+)";
 
+            var tempStack = new Stack<char>();
             for (; index < input.Length; index++)
             {
                 var match = Regex.Match(input[index], regex);
-                var x1 = int.Parse(match.Groups[1].Value);
-                var x2 = int.Parse(match.Groups[2].Value);
-                var x3 = int.Parse(match.Groups[3].Value);
-
-                var s = new Stack<char>();
-                while (x1 > 0)
-                {
-                    s.Push(stacks[x2 - 1].Pop());
-                    x1--;
-                }
-
-                while (s.Count > 0)
-                {
-                    stacks[x3 - 1].Push(s.Pop());
-                }
+                var count = int.Parse(match.Groups[1].Value);
+                var i1 = int.Parse(match.Groups[2].Value) - 1;
+                var i2 = int.Parse(match.Groups[3].Value) - 1;
+                
+                while (count-- > 0) tempStack.Push(stacks[i1].Pop());
+                while (tempStack.Count > 0) stacks[i2].Push(tempStack.Pop());
             }
 
             foreach (var stack in stacks)
@@ -114,7 +101,7 @@ namespace AdventOfCode.Puzzles._2022.Day05
 
         public bool IsPartTwoCorrect()
         {
-            return false;
+            return _result == "PGSQBFLDP";
         }
     }
 }
