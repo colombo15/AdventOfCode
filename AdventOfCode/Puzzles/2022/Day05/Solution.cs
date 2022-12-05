@@ -1,4 +1,5 @@
 ﻿using AdventOfCode.Common;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace AdventOfCode.Puzzles._2022.Day05
@@ -22,7 +23,6 @@ namespace AdventOfCode.Puzzles._2022.Day05
             var stacks = new List<Stack<char>>();
             var regex = @"(?:(?:\[|\s)(.)(?:\]|\s)\s?)";
             var index = 0;
-            var result = "";
 
             for (; index < input.Length; index++)
             {
@@ -61,12 +61,13 @@ namespace AdventOfCode.Puzzles._2022.Day05
                 }
             }
 
+            var sb = new StringBuilder(stacks.Count);
             foreach (var stack in stacks)
             {
-                result += stack.Peek();
+                sb.Append(stack.Peek());
             }
 
-            return result;
+            return sb.ToString();
         }
 
         public void Print()
