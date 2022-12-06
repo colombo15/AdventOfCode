@@ -1,4 +1,4 @@
 ﻿using AdventOfCode;
 
-//await RunnerService.RunCurrentDayAsync();
-RunnerService.RunAllDays();
+await RunnerService.RunCurrentDayAsync();
+//RunnerService.RunAllDays();

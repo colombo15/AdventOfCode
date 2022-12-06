@@ -57,6 +57,7 @@ namespace AdventOfCode
 
         public async static void RunAllDays()
         {
+            // Load all inputs
             var inputs = new List<string[]>
             {
                 await PuzzleInputService.ReadPuzzleInput(2022, 1),
@@ -67,6 +68,8 @@ namespace AdventOfCode
                 await PuzzleInputService.ReadPuzzleInput(2022, 6)
             };
 
+            // Create 2 solutions for each day (part 1 and part 2)
+            // These don't have constructors so no computation is happening here
             var solutions = new List<ISolution> 
             {
                 new Puzzles._2022.Day01.Solution(),
@@ -86,6 +89,7 @@ namespace AdventOfCode
             var sw = new Stopwatch();
             sw.Start();
 
+            // Run all the solutions!
             for (var i = 0; i < solutions.Count; i += 2)
             {
                 var index = (int)Math.Floor(i / 2.0);
