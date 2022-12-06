@@ -63,7 +63,8 @@ namespace AdventOfCode
                 await PuzzleInputService.ReadPuzzleInput(2022, 2),
                 await PuzzleInputService.ReadPuzzleInput(2022, 3),
                 await PuzzleInputService.ReadPuzzleInput(2022, 4),
-                await PuzzleInputService.ReadPuzzleInput(2022, 5)
+                await PuzzleInputService.ReadPuzzleInput(2022, 5),
+                await PuzzleInputService.ReadPuzzleInput(2022, 6)
             };
 
             var solutions = new List<ISolution> 
@@ -77,7 +78,9 @@ namespace AdventOfCode
                 new Puzzles._2022.Day04.Solution(),
                 new Puzzles._2022.Day04.Solution(),
                 new Puzzles._2022.Day05.Solution(),
-                new Puzzles._2022.Day05.Solution()
+                new Puzzles._2022.Day05.Solution(),
+                new Puzzles._2022.Day06.Solution(),
+                new Puzzles._2022.Day06.Solution()
             };
 
             var sw = new Stopwatch();
