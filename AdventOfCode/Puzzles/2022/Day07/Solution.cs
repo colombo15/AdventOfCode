@@ -8,24 +8,12 @@ namespace AdventOfCode.Puzzles._2022.Day07
 
         public void PartOne(string[] input)
         {
-            var root = new TreeNode();
-            var curr = root;
-            var nodeReferences = new List<TreeNode>() { root };
-
-            BuildTree(input, ref root, ref nodeReferences);
-
-            _result = nodeReferences.Select((x) => x.GetTotalFileSize()).Where((x) => x <= 100000).Sum();
+            _result = BuildTree(input).Select(x => x.GetTotalFileSize()).Where(x => x <= 100000).Sum();
         }
 
         public void PartTwo(string[] input)
-        {
-            var root = new TreeNode();
-            var curr = root;
-            var nodeReferences = new List<TreeNode>() { root };
-
-            BuildTree(input, ref root, ref nodeReferences);
-
-            var fileSizes = nodeReferences.Select((x) => x.GetTotalFileSize()).OrderBy((x) => x);
+        { 
+            var fileSizes = BuildTree(input).Select(x => x.GetTotalFileSize()).OrderBy(x => x);
 
             var unusedSpace = 70000000 - fileSizes.Last();
             foreach(var size in fileSizes)
@@ -40,9 +28,10 @@ namespace AdventOfCode.Puzzles._2022.Day07
 
         private class TreeNode
         {
-            public List<TreeNode> Children = new List<TreeNode>();
+            public List<TreeNode> Children = new();
             public long FileSize = 0;
-            public TreeNode Parent;
+            public TreeNode Parent = new();
+
             public long GetTotalFileSize()
             {
                 var result = FileSize;
@@ -56,9 +45,10 @@ namespace AdventOfCode.Puzzles._2022.Day07
             }
         }
 
-        private void BuildTree(string[] input, ref TreeNode root, ref List<TreeNode> nodeReferences)
+        private static List<TreeNode> BuildTree(string[] input)
         {
-            var curr = root;
+            var nodeReferences = new List<TreeNode>();
+            var curr = new TreeNode();
 
             foreach (var item in input)
             {
@@ -83,6 +73,8 @@ namespace AdventOfCode.Puzzles._2022.Day07
                     curr.FileSize += long.Parse(split[0]);
                 }
             }
+
+            return nodeReferences;
         }
 
         public void Print()
