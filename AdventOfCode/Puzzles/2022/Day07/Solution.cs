@@ -30,7 +30,7 @@ namespace AdventOfCode.Puzzles._2022.Day07
         {
             public List<TreeNode> Children = new();
             public long FileSize = 0;
-            public TreeNode Parent = new();
+            public TreeNode? Parent;
 
             public long GetTotalFileSize()
             {
