@@ -9,33 +9,10 @@ namespace AdventOfCode.Puzzles._2022.Day07
         public void PartOne(string[] input)
         {
             var root = new TreeNode();
-            var nodeReferences = new List<TreeNode>() { root };
             var curr = root;
+            var nodeReferences = new List<TreeNode>() { root };
 
-            foreach (var item in input)
-            {
-                if (item == "$ cd /") continue;
-
-                if (item.StartsWith("$ cd"))
-                {
-                    if (item.EndsWith(".."))
-                    {
-                        curr = curr.Parent;
-                    }
-                    else
-                    {
-                        var newNode = new TreeNode();
-                        nodeReferences.Add(newNode);
-                        newNode.Parent = curr;
-                        curr.Children.Add(newNode);
-                        curr = newNode;
-                    }
-                }
-                else if (!item.StartsWith("$ ls") && !item.StartsWith("dir"))
-                {
-                    curr.FileSize += long.Parse(item.Split(' ').First());
-                }
-            }
+            BuildTree(input, ref root, ref nodeReferences);
 
             _result = nodeReferences.Select((x) => x.GetTotalFileSize()).Where((x) => x <= 100000).Sum();
         }
@@ -43,42 +20,19 @@ namespace AdventOfCode.Puzzles._2022.Day07
         public void PartTwo(string[] input)
         {
             var root = new TreeNode();
-            var nodeReferences = new List<TreeNode>() { root };
             var curr = root;
+            var nodeReferences = new List<TreeNode>() { root };
 
-            foreach (var item in input)
-            {
-                if (item == "$ cd /") continue;
+            BuildTree(input, ref root, ref nodeReferences);
 
-                if (item.StartsWith("$ cd"))
-                {
-                    if (item.EndsWith(".."))
-                    {
-                        curr = curr.Parent;
-                    }
-                    else
-                    {
-                        var newNode = new TreeNode();
-                        nodeReferences.Add(newNode);
-                        newNode.Parent = curr;
-                        curr.Children.Add(newNode);
-                        curr = newNode;
-                    }
-                }
-                else if (!item.StartsWith("$ ls") && !item.StartsWith("dir"))
-                {
-                    curr.FileSize += long.Parse(item.Split(' ').First());
-                }
-            }
-
-            var fileSizes = nodeReferences.Select((x) => x.GetTotalFileSize()).OrderBy((x) => x).ToArray();
+            var fileSizes = nodeReferences.Select((x) => x.GetTotalFileSize()).OrderBy((x) => x);
 
             var unusedSpace = 70000000 - fileSizes.Last();
-            for (var i = 0; i < fileSizes.Length; i++)
+            foreach(var size in fileSizes)
             {
-                if (unusedSpace + fileSizes[i] >= 30000000)
+                if (unusedSpace + size >= 30000000)
                 {
-                    _result = fileSizes[i];
+                    _result = size;
                     return;
                 }
             }
@@ -102,6 +56,35 @@ namespace AdventOfCode.Puzzles._2022.Day07
             }
         }
 
+        private void BuildTree(string[] input, ref TreeNode root, ref List<TreeNode> nodeReferences)
+        {
+            var curr = root;
+
+            foreach (var item in input)
+            {
+                var split = item.Split(' ');
+                if (split[1] == "cd")
+                {
+                    if (split[2] == "..")
+                    {
+                        curr = curr.Parent;
+                    }
+                    else
+                    {
+                        var newNode = new TreeNode();
+                        nodeReferences.Add(newNode);
+                        newNode.Parent = curr;
+                        curr.Children.Add(newNode);
+                        curr = newNode;
+                    }
+                }
+                else if (split[1] != "ls" && split[0] != "dir")
+                {
+                    curr.FileSize += long.Parse(split[0]);
+                }
+            }
+        }
+
         public void Print()
         {
             Console.WriteLine(_result);
@@ -109,12 +92,12 @@ namespace AdventOfCode.Puzzles._2022.Day07
 
         public bool IsPartOneCorrect()
         {
-            return false;
+            return _result == 1449447;
         }
 
         public bool IsPartTwoCorrect()
         {
-            return false;
+            return _result == 8679207;
         }
     }
 }
