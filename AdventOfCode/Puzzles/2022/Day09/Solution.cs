@@ -105,43 +105,18 @@ namespace AdventOfCode.Puzzles._2022.Day09
 
                 if (xAbsDiff <= 1 && yAbsDiff <= 1) return;
 
-                if (xAbsDiff >= 1 && yAbsDiff >= 2)
+                if ((xAbsDiff >= 2 && yAbsDiff >= 1) || (xAbsDiff >= 1 && yAbsDiff >= 2))
                 {
-                    if (xDiff > 0)
-                        knot.x++;
-                    else
-                        knot.x--;
-
-                    if (yDiff > 0)
-                        knot.y++;
-                    else
-                        knot.y--;
-                }
-                else if (xAbsDiff >= 2 && yAbsDiff >= 1)
-                {
-                    if (xDiff > 0)
-                        knot.x++;
-                    else
-                        knot.x--;
-
-                    if (yDiff > 0)
-                        knot.y++;
-                    else
-                        knot.y--;
+                    knot.MoveX(xDiff);
+                    knot.MoveY(yDiff);
                 }
                 else if (xAbsDiff == 0 && yAbsDiff == 2)
                 {
-                    if (yDiff > 0)
-                        knot.y++;
-                    else
-                        knot.y--;
+                    knot.MoveY(yDiff);
                 }
                 else if (xAbsDiff == 2 && yAbsDiff == 0)
                 {
-                    if (xDiff > 0)
-                        knot.x++;
-                    else
-                        knot.x--;
+                    knot.MoveX(xDiff);
                 }
                 else
                 {
@@ -164,6 +139,22 @@ namespace AdventOfCode.Puzzles._2022.Day09
 
                 public int x;
                 public int y;
+
+                public void MoveX(int xDiff)
+                {
+                    if (xDiff > 0)
+                        x++;
+                    else
+                        x--;
+                }
+
+                public void MoveY(int yDiff)
+                {
+                    if (yDiff > 0)
+                        y++;
+                    else
+                        y--;
+                }
             }
         }
 
