@@ -180,12 +180,12 @@ namespace AdventOfCode.Puzzles._2022.Day08
 
         public bool IsPartOneCorrect()
         {
-            return false;
+            return _result == 1809;
         }
 
         public bool IsPartTwoCorrect()
         {
-            return false;
+            return _result == 479400;
         }
     }
 }
