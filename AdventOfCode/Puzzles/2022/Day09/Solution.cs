@@ -3,21 +3,23 @@ using System.Diagnostics;
 
 namespace AdventOfCode.Puzzles._2022.Day09
 {
-    internal sealed class Solution : ISolution
+    internal sealed partial class Solution : ISolution
     {
         private int _result;
 
         public void PartOne(string[] input)
         {
-            var rope = new Rope(2);
+            var rope = new Rope();
             
             foreach (var item in input)
             {
-                var split = item.Split(' ');
-                rope.Move(split[0][0], int.Parse(split[1]));
+                var (direction, steps) = 
+                    item.Split(' ') switch { var split => (split[0][0], int.Parse(split[1])) };
+
+                rope.Move(direction, steps);
             }
 
-            _result = rope.TailVisitedCount();
+            _result = rope.GetTailVisitedCount();
         }
 
         public void PartTwo(string[] input)
@@ -26,69 +28,67 @@ namespace AdventOfCode.Puzzles._2022.Day09
 
             foreach (var item in input)
             {
-                var split = item.Split(' ');
-                rope.Move(split[0][0], int.Parse(split[1]));
+                var (direction, steps) = 
+                    item.Split(' ') switch { var split => (split[0][0], int.Parse(split[1])) };
+
+                rope.Move(direction, steps);
             }
 
-            _result = rope.TailVisitedCount();
+            _result = rope.GetTailVisitedCount();
         }
 
         private class Rope
         {
-            public Rope (int knotCount)
+            private readonly Coord[] Knots;
+            private readonly HashSet<string> TailTraveledCoords;
+
+            public Rope (int knotCount = 2)
             {
-                Knots = new List<Coord>();
-                hs = new HashSet<string>();
+                if (knotCount < 2)
+                    knotCount = 2;
+
+                Knots = new Coord[knotCount];
+                TailTraveledCoords = new HashSet<string>();
 
                 for (var i = 0; i < knotCount; i++)
                 {
-                    Knots.Add(new Coord());
+                    Knots[i] = new Coord();
                 }
             }
-
-            private readonly List<Coord> Knots;
-
-            private readonly HashSet<string> hs;
 
             public void Move(char direction, int steps)
             {
-                AddTailCoordToHashSet();
-
                 for (var i = 0; i < steps; i++)
                 {
                     MoveHead(direction);
-                    for (var j = 1; j < Knots.Count; j++)
+                    for (var j = 1; j < Knots.Length; j++)
                     {
                         MoveKnot(j);
+
+                        if (j == Knots.Length - 1)
+                        {
+                            AddTailCoordToHashSet();
+                        }
                     }
-                    AddTailCoordToHashSet();
                 }
             }
 
-            public int TailVisitedCount()
+            public int GetTailVisitedCount()
             {
-                return hs.Count;
+                return TailTraveledCoords.Count;
             }
 
             private void MoveHead(char direction)
             {
                 var head = Knots[0];
+
                 switch (direction)
                 {
-                    case 'U':
-                        head.y++;
-                        break;
-                    case 'D':
-                        head.y--;
-                        break;
-                    case 'L':
-                        head.x--;
-                        break;
-                    case 'R':
-                        head.x++;
-                        break;
-                    default:
-                        throw new UnreachableException();
+                    case 'U': head.y++; break;
+                    case 'D': head.y--; break;
+                    case 'L': head.x--; break;
+                    case 'R': head.x++; break;
+                    default: throw new UnreachableException();
                 }
             }
 
@@ -105,28 +105,20 @@ namespace AdventOfCode.Puzzles._2022.Day09
 
                 if (xAbsDiff <= 1 && yAbsDiff <= 1) return;
 
-                if ((xAbsDiff >= 2 && yAbsDiff >= 1) || (xAbsDiff >= 1 && yAbsDiff >= 2))
+                if ((xAbsDiff == 2 && yAbsDiff == 0) || (xAbsDiff >= 2 && yAbsDiff >= 1) || (xAbsDiff >= 1 && yAbsDiff >= 2))
                 {
-                    knot.MoveX(xDiff);
-                    knot.MoveY(yDiff);
+                    knot.MoveX(xDiff > 0);
                 }
-                else if (xAbsDiff == 0 && yAbsDiff == 2)
+
+                if ((xAbsDiff >= 2 && yAbsDiff >= 1) || (xAbsDiff >= 1 && yAbsDiff >= 2) || (xAbsDiff == 0 && yAbsDiff == 2))
                 {
-                    knot.MoveY(yDiff);
-                }
-                else if (xAbsDiff == 2 && yAbsDiff == 0)
-                {
-                    knot.MoveX(xDiff);
-                }
-                else
-                {
-                    throw new UnreachableException();
+                    knot.MoveY(yDiff > 0);
                 }
             }
 
             private void AddTailCoordToHashSet()
             {
-                hs.Add(Knots.Last().x.ToString() + ',' + Knots.Last().y.ToString());
+                TailTraveledCoords.Add(Knots.Last().x.ToString() + ',' + Knots.Last().y.ToString());
             }
 
             private class Coord
@@ -140,37 +132,18 @@ namespace AdventOfCode.Puzzles._2022.Day09
                 public int x;
                 public int y;
 
-                public void MoveX(int xDiff)
+                public void MoveX(bool up)
                 {
-                    if (xDiff > 0)
-                        x++;
-                    else
-                        x--;
+                    if (up) x++;
+                    else x--;
                 }
 
-                public void MoveY(int yDiff)
+                public void MoveY(bool up)
                 {
-                    if (yDiff > 0)
-                        y++;
-                    else
-                        y--;
+                    if (up) y++;
+                    else y--;
                 }
             }
-        }
-
-        public void Print()
-        {
-            Console.WriteLine(_result);
-        }
-
-        public bool IsPartOneCorrect()
-        {
-            return _result == 6376;
-        }
-
-        public bool IsPartTwoCorrect()
-        {
-            return _result == 2607;
         }
     }
 }
