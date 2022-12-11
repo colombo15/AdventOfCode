@@ -96,7 +96,7 @@ namespace AdventOfCode.Puzzles._2022.Day11
                     if (_worry)
                         curr = (long)Math.Floor((decimal)(curr / 3));
                     else
-                        curr = curr % _modProduct;
+                        curr %= _modProduct;
 
                     if (curr % _testDivisible == 0)
                         _monkeys![_trueMonkey]._items.Enqueue(curr);
