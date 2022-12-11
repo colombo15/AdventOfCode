@@ -13,7 +13,7 @@ namespace AdventOfCode
             var year = ConfigurationManager.AppSettings.Get("Year");
             var day = ConfigurationManager.AppSettings.Get("Day");
             if (year == null || day == null) return;
-            day = int.Parse(day) > 10 ? $"{day}" : $"0{day}";
+            day = int.Parse(day) >= 10 ? $"{day}" : $"0{day}";
 
             var solutionExecutor = new SolutionExecutor(year, day);
             var input = await PuzzleInputService.ReadPuzzleInput();
