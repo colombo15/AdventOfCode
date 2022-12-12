@@ -55,7 +55,7 @@ namespace AdventOfCode
             Console.Read();
         }
 
-        public async static void RunAllDays()
+        public async static Task RunAllDays()
         {
             // Load all inputs
             var inputs = new List<string[]>
@@ -67,6 +67,7 @@ namespace AdventOfCode
                 await PuzzleInputService.ReadPuzzleInput(2022, 5),
                 await PuzzleInputService.ReadPuzzleInput(2022, 6),
                 await PuzzleInputService.ReadPuzzleInput(2022, 7),
+                await PuzzleInputService.ReadPuzzleInput(2022, 8),
             };
 
             // Create 2 solutions for each day (part 1 and part 2)
@@ -87,6 +88,8 @@ namespace AdventOfCode
                 new Puzzles._2022.Day06.Solution(),
                 new Puzzles._2022.Day07.Solution(),
                 new Puzzles._2022.Day07.Solution(),
+                new Puzzles._2022.Day08.Solution(),
+                new Puzzles._2022.Day08.Solution(),
             };
 
             var sw = new Stopwatch();

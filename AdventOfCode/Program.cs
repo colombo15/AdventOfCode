@@ -1,4 +1,7 @@
 ﻿using AdventOfCode;
+using AdventOfCode.Common;
+using BenchmarkDotNet.Running;
 
-await RunnerService.RunCurrentDayAsync();
-//RunnerService.RunAllDays();
+BenchmarkRunner.Run<Benchmark>();
+//await RunnerService.RunCurrentDayAsync();
+//await RunnerService.RunAllDays();
