@@ -16,7 +16,7 @@ namespace AdventOfCode.Puzzles._2022.Day12
 
         public bool IsPartTwoCorrect()
         {
-            return false;
+            return _result == 488;
         }
     }
 }

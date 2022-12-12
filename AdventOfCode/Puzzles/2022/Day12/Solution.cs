@@ -9,166 +9,113 @@ namespace AdventOfCode.Puzzles._2022.Day12
 
         public void PartOne(string[] input)
         {
-            var grid = new Grid(input);
-            grid.Traverse(grid.End!, 0);
-            _result = grid.Start!.DistanceFromEnd;
+            var graph = new Graph(input);
+            var end = graph.BreathSearchFirst('S');
+            _result = end.CalculatePath();
         }
 
         public void PartTwo(string[] input)
         {
-            _result = int.MaxValue;
-            for (var i = 0; i < input.Length; i++)
-            {
-                if (input[i].Contains('S'))
-                {
-                    input[i] = input[i].Replace('S', 'a');
-                    break;
-                }
-            }
-
-            for (var i = 0; i < input.Length; i++)
-            {
-                for (var j = 0; j < input[i].Length; j++)
-                {
-                    if (input[i][j] == 'a')
-                    {
-                        var newArray = new string[input.Length];
-                        Array.Copy(input, newArray, input.Length);
-                        var cArray = newArray[i].ToCharArray();
-                        cArray[j] = 'S';
-                        newArray[i] = new string(cArray);
-
-                        var grid = new Grid(newArray);
-                        grid.Traverse(grid.End!, 0);
-
-                        if (grid.Start!.DistanceFromEnd < _result)
-                        {
-                            _result = grid.Start!.DistanceFromEnd;
-                        }
-                    }
-                }
-            }
+            var graph = new Graph(input);
+            var end = graph.BreathSearchFirst('a');
+            _result = end.CalculatePath();
         }
 
-        private sealed class Grid
+        private sealed class Graph
         {
-            public Dictionary<(int, int), Node> Nodes { get; private set; }
-            public Node? Start { get; set; }
-            public Node? End { get; private set; }
+            public Vertex? Root { get; set; }
 
-            private int _height;
-            private int _width;
-
-            public Queue<Node> LowestElevation { get; private set; }
-
-            public Grid(string[] input) 
+            public Graph(string[] input)
             {
-                Nodes = new Dictionary<(int, int), Node>();
-                _height = input.Length;
-                _width = input[0].Length;
-                BuildGrid(input);
-                LowestElevation = new Queue<Node>(Nodes.Select(kvp => kvp.Value).Where(x => x.CharElevation == 'a'));
-            }
+                var vertices = new Dictionary<(int, int), Vertex>();
 
-            public void BuildGrid(string[] input)
-            {
                 for (var y = 0; y < input.Length; y++)
                 {
                     for (var x = 0; x < input[y].Length; x++)
                     {
-                        var node = new Node(input[y][x]);
-                        Nodes.Add((x, y), node);
+                        var elevation = input[y][x];
+                        var coord = (x, y);
 
-                        if (input[y][x] == 'S')
+                        if (elevation == 'E')
                         {
-                            Start = node;
-                            node.IsStart = true;
+                            Root = new Vertex('z');
+                            vertices.Add(coord, Root);
+                            continue;
                         }
-                        else if (input[y][x] == 'E')
+
+                        vertices.Add(coord, new Vertex(elevation));
+                    }
+                }
+
+                foreach (var kvp in vertices)
+                {
+                    var x = kvp.Key.Item1;
+                    var y = kvp.Key.Item2;
+                    var vertex = kvp.Value;
+
+                    if (x - 1 >= 0) vertex.AddEdge(vertices[(x - 1, y)]);
+                    if (x + 1 < input[y].Length) vertex.AddEdge(vertices[(x + 1, y)]);
+                    if (y - 1 >= 0) vertex.AddEdge(vertices[(x, y - 1)]);
+                    if (y + 1 < input.Length) vertex.AddEdge(vertices[(x, y + 1)]);
+                }
+            }
+
+            public Vertex BreathSearchFirst(char goal)
+            {
+                Vertex retval;
+                var q = new Queue<Vertex>();
+                var root = Root!;
+                root.Explored = true;
+
+                q.Enqueue(root);
+
+                while (q.Count > 0)
+                {
+                    retval = q.Dequeue();
+
+                    if (retval.Elevation == goal)
+                    {
+                        return retval;
+                    }
+                    
+                    foreach (var edge in retval.Edges)
+                    {
+                        if (!edge.Explored)
                         {
-                            End = node;
-                            node.IsEnd = true;
+                            edge.Explored = true;
+                            edge.Parent = retval;
+                            q.Enqueue(edge);
                         }
                     }
                 }
 
-                foreach (var kvp in Nodes)
-                {
-                    var x = kvp.Key.Item1;
-                    var y = kvp.Key.Item2;
-                    var node = kvp.Value;
+                return root;
+            }
 
-                    if (x - 1 >= 0) node.AddNode(Nodes[(x - 1, y)]);
-                    if (x + 1 < _width) node.AddNode(Nodes[(x + 1, y)]);
-                    if (y - 1 >= 0) node.AddNode(Nodes[(x, y - 1)]);
-                    if (y + 1 < _height) node.AddNode(Nodes[(x, y + 1)]);
+            public sealed class Vertex
+            {
+                public int Elevation { get; private set; }
+                public List<Vertex> Edges { get; private set; }
+                public Vertex? Parent { get; set; }
+                public bool Explored { get; set; }
+
+                public Vertex(char elevation)
+                {
+                    Elevation = elevation;
+                    Edges = new List<Vertex>();
                 }
-            }
 
-            public void Reset()
-            {
-                foreach (var node in Nodes)
+                public int CalculatePath()
                 {
-                    node.Value.DistanceFromEnd = int.MaxValue;
-                    node.Value.IsStart = false;
+                    if (Parent == null)
+                        return 0;
+                    return Parent.CalculatePath() + 1;
                 }
-            }
 
-            public void Traverse(Node node, int curr)
-            {
-                node.DistanceFromEnd = curr;
-
-                foreach (var parent in node.Parents)
+                public void AddEdge(Vertex v)
                 {
-                    if (parent.DistanceFromEnd > curr + 1)
-                        Traverse(parent, curr + 1);
-                }
-            }
-        }
-
-        private sealed class Node
-        {
-            
-            public char CharElevation { get; private set; }
-            public int Elevation { get; private set; }
-            public List<Node> Children { get; private set; }
-            public List<Node> Parents { get; private set; }
-
-            public bool IsStart { get; set; }
-            public bool IsEnd { get; set; }
-
-            public int DistanceFromEnd = int.MaxValue;
-
-            public Node(char elevation)
-            {
-                CharElevation = elevation;
-                Elevation = elevation == 'S' ? 'a' : elevation == 'E' ? 'z' : elevation;
-                Children = new List<Node>();
-                Parents = new List<Node>();
-            }
-
-            public void AddNode (Node node)
-            {
-                if (!IsEnd)
-                    AddChild(node);
-
-                if (!IsStart && !node.IsEnd)
-                    AddParent(node);
-            }
-
-            private void AddChild (Node node)
-            {
-                if (node.Elevation <= Elevation + 1)
-                {
-                    Children.Add(node);
-                }
-            }
-
-            private void AddParent(Node node)
-            {
-                if (node.Elevation >= Elevation - 1)
-                {
-                    Parents.Add(node);
+                    if (v.Elevation >= Elevation - 1 || v.Elevation == 83)
+                        Edges.Add(v);
                 }
             }
         }

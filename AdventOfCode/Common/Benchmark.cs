@@ -29,6 +29,10 @@ namespace AdventOfCode.Common
                 await PuzzleInputService.ReadPuzzleInput(2022, 6),
                 await PuzzleInputService.ReadPuzzleInput(2022, 7),
                 await PuzzleInputService.ReadPuzzleInput(2022, 8),
+                await PuzzleInputService.ReadPuzzleInput(2022, 9),
+                await PuzzleInputService.ReadPuzzleInput(2022, 10),
+                await PuzzleInputService.ReadPuzzleInput(2022, 11),
+                await PuzzleInputService.ReadPuzzleInput(2022, 12),
             };
         }
 
@@ -55,6 +59,14 @@ namespace AdventOfCode.Common
                 new Puzzles._2022.Day07.Solution(),
                 new Puzzles._2022.Day08.Solution(),
                 new Puzzles._2022.Day08.Solution(),
+                new Puzzles._2022.Day09.Solution(),
+                new Puzzles._2022.Day09.Solution(),
+                new Puzzles._2022.Day10.Solution(),
+                new Puzzles._2022.Day10.Solution(),
+                new Puzzles._2022.Day11.Solution(),
+                new Puzzles._2022.Day11.Solution(),
+                new Puzzles._2022.Day12.Solution(),
+                new Puzzles._2022.Day12.Solution(),
             };
         }
 

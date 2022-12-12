@@ -17,7 +17,7 @@ namespace AdventOfCode.Puzzles._2022.Day10
 
         public void PartTwo(string[] input)
         {
-            var cpu = new CatNodeRayTub(1, true);
+            var cpu = new CatNodeRayTub(1, false);
             cpu.LoadProgram(input);
             cpu.RunProgram();
             Console.WriteLine();
