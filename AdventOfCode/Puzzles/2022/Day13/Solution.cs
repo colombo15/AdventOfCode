@@ -53,7 +53,7 @@ namespace AdventOfCode.Puzzles._2022.Day13
                 {
                     if (Signal2.Count <= i)
                     {
-                        return false;
+                        return true;
                     }
 
                     if (Signal1[i] > Signal2[i])
