@@ -31,8 +31,7 @@ namespace AdventOfCode.Puzzles._2022.Day15
                 if (sensor.y < target && sensor.y + sensor.manhattanDistance >= target)
                 {
                     var val = sensor.y + sensor.manhattanDistance;
-                    val -= target;
-                    val += 1;
+                    val = val - target + 1;
                     _result += ((val - 1) * 2) + 1;
                 }
                 else if (sensor.y > target && sensor.y - sensor.manhattanDistance < target)
