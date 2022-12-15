@@ -11,12 +11,12 @@ namespace AdventOfCode.Puzzles._2022.Day13
 
         public bool IsPartOneCorrect()
         {
-            return false;
+            return _result == 5938;
         }
 
         public bool IsPartTwoCorrect()
         {
-            return false;
+            return _result == 29025;
         }
     }
 }

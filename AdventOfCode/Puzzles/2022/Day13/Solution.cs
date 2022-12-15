@@ -1,6 +1,9 @@
 ﻿using AdventOfCode.Common;
+using System.Security.Cryptography.X509Certificates;
+using System.Text;
 using System.Text.RegularExpressions;
-using static BenchmarkDotNet.Engines.Engine;
+using System.Xml.Linq;
+using static AdventOfCode.Puzzles._2022.Day13.Solution;
 
 namespace AdventOfCode.Puzzles._2022.Day13
 {
@@ -10,64 +13,229 @@ namespace AdventOfCode.Puzzles._2022.Day13
 
         public void PartOne(string[] input)
         {
-            var signals = new List<Signal>();
-
             for (var i = 0; i < input.Length; i += 3)
             {
-                signals.Add(new Signal(input[i], input[i + 1]));
+                var packet1 = new Packet(input[i]);
+                var packet2 = new Packet(input[i + 1]);
+                if (ComparePackets(packet1, packet2))
+                {
+                    _result += (int)Math.Ceiling(i / 3.0) + 1;
+                }
             }
-
-            for (var i = 0; i < signals.Count; i++)
-            {
-                if (signals[i].IsRightOrder())
-                    _result += i + 1;
-            }
-
         }
 
         public void PartTwo(string[] input)
         {
-            throw new NotImplementedException();
+            var myPackets = new List<Packet>();
+
+            for (var i = 0; i < input.Length; i += 3)
+            {
+                var packet1 = new Packet(input[i]);
+                var packet2 = new Packet(input[i + 1]);
+
+                myPackets.Add(packet1);
+                myPackets.Add(packet2);
+            }
+
+            var two = new Packet("[[2]]");
+            var six = new Packet("[[6]]");
+
+            myPackets.Add(two);
+            myPackets.Add(six);
+
+            myPackets.Sort((x, y) => ComparePackets(x, y) ? -1 : 1);
+            _result = (myPackets.IndexOf(two) + 1) * (myPackets.IndexOf(six) + 1);
         }
 
-        private partial class Signal
+        public class Packet
         {
-            public List<int> Signal1 { get; private set; }
-            public List<int> Signal2 { get; private set; }
+            public List<Node> Nodes { get; set; }
 
-            public Signal(string s1, string s2) 
+            public Packet(string packet) 
             {
-                Signal1 = new List<int>();
-                Signal2 = new List<int>();
+                var open = 0;
+                var closed = 0;
 
-                var match = MyRegex().Matches(s1);
-                Signal1 = new List<int>(match.Select(x => int.Parse(x.Value)));
+                Nodes = new List<Node>();
 
-                match = MyRegex().Matches(s2);
-                Signal2 = new List<int>(match.Select(x => int.Parse(x.Value)));
-            }
-
-            public bool IsRightOrder()
-            {
-                for (var i = 0; i < Signal1.Count; i++)
+                for (var i = 1; i < packet.Length - 1; i++)
                 {
-                    if (Signal2.Count <= i)
+                    if (packet[i] == '[')
                     {
-                        return true;
+                        var subStart = i + 1;
+                        open++;
+                        while (open > closed)
+                        {
+                            i++;
+                            if (packet[i] == '[')
+                                open++;
+                            else if (packet[i] == ']')
+                                closed++;
+                        }
+
+                        Nodes.Add(new Node(packet[subStart..i]));
                     }
-
-                    if (Signal1[i] > Signal2[i])
+                    else if (packet[i] != ',')
                     {
-                        return false;
+                        var nextComma = packet.IndexOf(',', i);
+                        if (nextComma == -1) 
+                            nextComma = packet.Length - 1;
 
+                        Nodes.Add(new Node(int.Parse(packet.Substring(i, nextComma - i))));
+                        i = nextComma;
                     }
                 }
+            }
+        }
 
-                return true;
+        public class Node
+        {
+            public int Value { get; set; }
+            public List<Node>? Nodes { get; set; }
+
+            public Node(string packet)
+            {
+                Value = -1;
+                Nodes = new List<Node>();
+
+                if (packet == "") return;
+
+                if (!packet.Contains('['))
+                {
+                    foreach (var node in packet.Split(',').Select(x => new Node(int.Parse(x))))
+                    {
+                        Nodes.Add(node);
+                    }
+                }
+                else
+                {
+                    var open = 0;
+                    var closed = 0;
+
+                    for (var i = 0; i < packet.Length; i++)
+                    {
+                        if (packet[i] == '[')
+                        {
+                            var subStart = i + 1;
+                            open++;
+                            while (open > closed)
+                            {
+                                i++;
+                                if (packet[i] == '[')
+                                    open++;
+                                else if (packet[i] == ']')
+                                    closed++;
+                            }
+
+                            Nodes.Add(new Node(packet[subStart..i]));
+                        }
+                        else if (packet[i] != ',')
+                        {
+                            var nextComma = packet.IndexOf(',', i);
+                            if (nextComma == -1)
+                                nextComma = packet.Length;
+
+                            Nodes.Add(new Node(int.Parse(packet.Substring(i, nextComma - i))));
+                            i = nextComma;
+                        }
+                    }
+                }
             }
 
-            [GeneratedRegex("\\d+")]
-            private static partial Regex MyRegex();
+            public Node (int value) 
+            { 
+                Value = value;
+            }
+
+            public Node(Node node)
+            {
+                Value = -1;
+                Nodes = new List<Node>() { node };
+            }
+
+            public List<int> GetListOfInt()
+            {
+                var list = new List<int>();
+
+                if (Nodes != null)
+                {
+                    foreach (var node in Nodes)
+                    {
+                        node.GetListOfInt().ForEach(x => list.Add(x));
+                    }
+                }
+                else
+                {
+                    list.Add(Value);
+                }
+
+                return list;
+            }
+        }
+
+        private bool ComparePackets(Packet packet1, Packet packet2)
+        {
+            if (packet1.Nodes == null) return false;
+            if (packet2.Nodes.Count == 0) return false;
+
+            for (var i = 0; i < packet1.Nodes.Count; i++)
+            {
+                if (packet2.Nodes.Count <= i) return false;
+                var comp = CompareNodes(packet1.Nodes[i], packet2.Nodes[i]);
+                if (comp != 0) return comp == 1;
+            }
+
+            return true;
+        }
+
+        private int CompareNodes(Node node1, Node node2)
+        {
+            if (node1.Value != -1 && node2.Value != -1)
+            {
+                if (node1.Value < node2.Value)
+                    return 1;
+                if (node1.Value > node2.Value)
+                    return -1;
+                return 0;
+            }
+
+            if (node1.Value != -1 && node2.Value == -1) 
+            {
+                var newParentNode = new Node(new Node(node1.Value));
+                return CompareNodes(newParentNode, node2);
+            }
+
+            if (node1.Value == -1 && node2.Value != -1)
+            {
+                var newParentNode = new Node(new Node(node2.Value));
+                return CompareNodes(node1, newParentNode);
+            }
+
+            if (node1.Value == -1 && node2.Value != -1)
+            {
+                var newParentNode = new Node(new Node(node2.Value));
+                return CompareNodes(node1, newParentNode);
+            }
+
+            if (node1.Value == -1 && node2.Value == -1)
+            {
+                for (var i = 0; i < node1.Nodes!.Count; i++)
+                {
+                    if (node2.Nodes!.Count == 0) 
+                        return -1;
+                    if (node2.Nodes!.Count <= i) 
+                        return -1;
+
+                    var comp = CompareNodes(node1.Nodes[i], node2.Nodes[i]);
+
+                    if (comp != 0) 
+                        return comp;
+                }
+
+                if (node1.Nodes.Count < node2.Nodes!.Count) return 1;
+            }
+
+            return 0;
         }
     }
 }
