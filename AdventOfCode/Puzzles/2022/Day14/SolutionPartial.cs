@@ -1,4 +1,5 @@
 ﻿using AdventOfCode.Common;
+using Microsoft.Diagnostics.Runtime.Utilities;
 
 namespace AdventOfCode.Puzzles._2022.Day14
 {
@@ -11,12 +12,12 @@ namespace AdventOfCode.Puzzles._2022.Day14
 
         public bool IsPartOneCorrect()
         {
-            return false;
+            return _result == 672;
         }
 
         public bool IsPartTwoCorrect()
         {
-            return false;
+            return _result == 26831;
         }
     }
 }
