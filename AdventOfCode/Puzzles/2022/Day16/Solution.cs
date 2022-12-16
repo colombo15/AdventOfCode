@@ -11,10 +11,67 @@ namespace AdventOfCode.Puzzles._2022.Day16
         {
             var rooms = ParseInput(input);
             var time = 30;
+            var connections = new Dictionary<string, Dictionary<string, int>>();
 
-            _result = FindHighestPreasure(rooms["AA"], time, 0);
+            foreach (var room in rooms)
+            {
+                connections.Add(room.Key, new Dictionary<string, int>());
 
-            throw new NotImplementedException();
+                foreach (var r in rooms)
+                {
+                    if (r.Key != room.Key)
+                    {
+                        connections[room.Key].Add(r.Key, BreathSearchFirst(room.Value, r.Value));
+                        foreach (var kvp in rooms) kvp.Value.Parent = null;
+                    }
+                }
+            }
+            /*
+            var retval = 0;
+            while (closed.Any() || time < 0)
+            {
+                var temp = 0;
+                Vertex? highest = null;
+
+                foreach (var c in closed)
+                {
+                    var travel = connections[curr.Name][c.Name];
+                    var totalP = (time - (travel + 1)) * c.Flow;
+
+                    if (totalP > temp)
+                    {
+                        temp = totalP;
+                        highest = c;
+                    }
+                }
+
+                time -= connections[curr.Name][highest!.Name] + 1;
+                curr = highest!;
+                closed.Remove(curr);
+                retval += temp;
+            }
+            */
+
+            var curr = rooms["AA"];
+            var closed = new List<Vertex>(rooms.Where(kvp => kvp.Value.Flow > 0).Select(kvp => kvp.Value));
+            var open = new List<Vertex>();
+            Vertex? highest = null;
+
+            foreach (var c in closed)
+            {
+                var temp = 0;
+                while (open.Count < closed.Count)
+                {
+                    var travel = connections[curr.Name][c.Name];
+                    var totalP = (time - (travel + 1)) * c.Flow;
+
+                    if (totalP > temp)
+                    {
+                        temp = totalP;
+                        highest = c;
+                    }
+                }
+            }
         }
 
         public void PartTwo(string[] input)
@@ -22,27 +79,44 @@ namespace AdventOfCode.Puzzles._2022.Day16
             throw new NotImplementedException();
         }
 
-        private int FindHighestPreasure(Vertex room, int time, int currflow)
+        private int BreathSearchFirst(Vertex node, Vertex goal)
         {
-            if (time <= 0)
-                return currflow;
+            Vertex retval;
+            var q = new Queue<Vertex>();
+            var root = node;
+            var explored = new HashSet<Vertex>();
+            explored.Add(root);
 
-            if (room.Flow > 0) 
+            q.Enqueue(root);
+
+            while (q.Count > 0)
             {
-                currflow += room.Flow * time;
-                room.Flow = 0;
-                time -= 1;
+                retval = q.Dequeue();
+
+                if (retval == goal)
+                {
+                    return GetParentLength(retval);
+                }
+
+                foreach (var edge in retval.Vertices)
+                {
+                    if (!explored.Contains(edge) && edge.Parent == null)
+                    {
+                        explored.Add(edge);
+                        edge.Parent = retval;
+                        q.Enqueue(edge);
+                    }
+                }
             }
 
-            var highest = 0;
-            foreach (var child in room.Vertices)
-            {
-                var retval = FindHighestPreasure(child, time - 1, currflow);
-                if (retval > highest)
-                    highest = retval;
-            }
+            return GetParentLength(root);
+        }
 
-            return highest;
+        private int GetParentLength(Vertex v)
+        {
+            if (v != null && v.Parent != null)
+                return 1 + GetParentLength(v.Parent);
+            return 0;
         }
 
         private Dictionary<string, Vertex> ParseInput(string[] input)
@@ -86,6 +160,12 @@ namespace AdventOfCode.Puzzles._2022.Day16
             public string Name { get; set; }
             public int Flow { get; set; }
             public List<Vertex> Vertices { get; set; }
+            public Vertex? Parent { get; internal set; }
+
+            public Vertex()
+            {
+                Vertices = new List<Vertex>();
+            }
 
             public Vertex(string name, int flow = 0) 
             { 
