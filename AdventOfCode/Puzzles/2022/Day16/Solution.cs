@@ -60,16 +60,13 @@ namespace AdventOfCode.Puzzles._2022.Day16
             foreach (var c in closed)
             {
                 var temp = 0;
-                while (open.Count < closed.Count)
-                {
-                    var travel = connections[curr.Name][c.Name];
-                    var totalP = (time - (travel + 1)) * c.Flow;
+                var travel = connections[curr.Name][c.Name];
+                var totalP = (time - (travel + 1)) * c.Flow;
 
-                    if (totalP > temp)
-                    {
-                        temp = totalP;
-                        highest = c;
-                    }
+                if (totalP > temp)
+                {
+                    temp = totalP;
+                    highest = c;
                 }
             }
         }
