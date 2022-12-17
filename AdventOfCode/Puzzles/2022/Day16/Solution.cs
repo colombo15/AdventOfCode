@@ -1,4 +1,5 @@
 ﻿using AdventOfCode.Common;
+using System.Diagnostics;
 using System.Text.RegularExpressions;
 
 namespace AdventOfCode.Puzzles._2022.Day16
@@ -11,7 +12,7 @@ namespace AdventOfCode.Puzzles._2022.Day16
         {
             var rooms = ParseInput(input);
             var time = 30;
-            var connections = new Dictionary<string, Dictionary<string, int>>();
+            Dictionary<string, Dictionary<string, int>> connections = new();
 
             foreach (var room in rooms)
             {
@@ -26,54 +27,131 @@ namespace AdventOfCode.Puzzles._2022.Day16
                     }
                 }
             }
-            /*
-            var retval = 0;
-            while (closed.Any() || time < 0)
-            {
-                var temp = 0;
-                Vertex? highest = null;
 
-                foreach (var c in closed)
-                {
-                    var travel = connections[curr.Name][c.Name];
-                    var totalP = (time - (travel + 1)) * c.Flow;
-
-                    if (totalP > temp)
-                    {
-                        temp = totalP;
-                        highest = c;
-                    }
-                }
-
-                time -= connections[curr.Name][highest!.Name] + 1;
-                curr = highest!;
-                closed.Remove(curr);
-                retval += temp;
-            }
-            */
-
-            var curr = rooms["AA"];
             var closed = new List<Vertex>(rooms.Where(kvp => kvp.Value.Flow > 0).Select(kvp => kvp.Value));
-            var open = new List<Vertex>();
-            Vertex? highest = null;
 
-            foreach (var c in closed)
+            _result = HighestPreasure(rooms["AA"], closed, time);
+
+            int HighestPreasure(Vertex node, List<Vertex> available, int t, int runningTotal = 0)
             {
-                var temp = 0;
-                var travel = connections[curr.Name][c.Name];
-                var totalP = (time - (travel + 1)) * c.Flow;
+                if (t < 0) return 0;
+                runningTotal += t * node.Flow;
 
-                if (totalP > temp)
+                if (available.Count == 0) 
+                    return runningTotal;
+                var highest = runningTotal;
+
+                foreach (var item in available)
                 {
-                    temp = totalP;
-                    highest = c;
+                    var newAvailable = new List<Vertex>(available);
+                    newAvailable.Remove(item);
+                    var travelTime = connections[node.Name][item.Name];
+                    var temp = HighestPreasure(item, newAvailable, t - travelTime - 1, runningTotal);
+                    if (temp > highest)
+                        highest = temp;
                 }
+
+                return highest;
             }
         }
 
         public void PartTwo(string[] input)
         {
-            throw new NotImplementedException();
+            var rooms = ParseInput(input);
+            var time = 30;
+            Dictionary<string, Dictionary<string, int>> connections = new();
+
+            foreach (var room in rooms)
+            {
+                connections.Add(room.Key, new Dictionary<string, int>());
+
+                foreach (var r in rooms)
+                {
+                    if (r.Key != room.Key)
+                    {
+                        connections[room.Key].Add(r.Key, BreathSearchFirst(room.Value, r.Value));
+                        foreach (var kvp in rooms) kvp.Value.Parent = null;
+                    }
+                }
+            }
+
+            var closed = new List<Vertex>(rooms.Where(kvp => kvp.Value.Flow > 0).Select(kvp => kvp.Value));
+            var stuff = new List<Vertex>();
+            var res = HighestPreasure(rooms["AA"], closed, time);
+            _result = res;
+
+            int HighestPreasure(Vertex node, List<Vertex> available, int t, int runningTotal = 0)
+            {
+                if (t < 0) return 0;
+                runningTotal += t * node.Flow;
+
+                if (available.Count == 0)
+                {
+                    if (runningTotal == 1751) stuff.Add(node);
+                    return runningTotal;
+                }
+
+                var highest = runningTotal;
+
+                foreach (var item in available)
+                {
+                    var newAvailable = new List<Vertex>(available);
+                    newAvailable.Remove(item);
+                    var travelTime = connections[node.Name][item.Name];
+                    var temp = HighestPreasure(item, newAvailable, t - travelTime - 1, runningTotal);
+                    if (temp > highest)
+                        highest = temp;
+                }
+
+                if (highest == 1751) stuff.Add(node);
+
+                return highest;
+            }
+
+            //int HighestPreasure(Vertex node, Vertex eleNode, List<Vertex> available, int t, int t2, int runningTotal = 0)
+            //{
+            //    if (t < 0 && t2 < 0) return 0;
+
+            //    if (t >= 0)
+            //        runningTotal += t * node.Flow;
+
+            //    if (t2 >= 0)
+            //        runningTotal += t2 * eleNode.Flow;
+
+            //    if (available.Count == 0)
+            //        return runningTotal;
+
+            //    var highest = runningTotal;
+
+            //    foreach (var item in available)
+            //    {
+            //        var newAvailable = new List<Vertex>(available);
+            //        newAvailable.Remove(item);
+            //        foreach (var item2 in newAvailable)
+            //        {
+            //            var newAvailable2 = new List<Vertex>(newAvailable);
+            //            var travelTime = -1;
+            //            var travelTime2 = -1;
+
+            //            if (t >= 0)
+            //            {
+            //                newAvailable2.Remove(item);
+            //                travelTime = t - connections[node.Name][item.Name] - 1;
+            //            }
+            //            if (t2 >= 0)
+            //            {
+            //                newAvailable2.Remove(item2);
+            //                travelTime2 = t2 - connections[eleNode.Name][item2.Name] - 1;
+            //            }
+
+            //            var temp = HighestPreasure(item, item2, newAvailable2, travelTime, travelTime2, runningTotal);
+            //            if (temp > highest)
+            //                highest = temp;
+            //        }
+            //    }
+
+            //    return highest;
+            //}
         }
 
         private int BreathSearchFirst(Vertex node, Vertex goal)
