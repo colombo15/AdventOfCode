@@ -15,7 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Puzzles\2022\Day18\Tests\" />
     <Folder Include="Puzzles\2022\Day19\Tests\" />
     <Folder Include="Puzzles\2022\Day20\Tests\" />
     <Folder Include="Puzzles\2022\Day21\Tests\" />
