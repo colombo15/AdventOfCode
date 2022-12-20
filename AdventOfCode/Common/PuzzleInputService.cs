@@ -16,7 +16,7 @@ namespace AdventOfCode.Common
 
             var basePath = AppDomain.CurrentDomain.BaseDirectory.Remove(AppDomain.CurrentDomain.BaseDirectory.IndexOf("bin"));
             var dayStr = day < 10 ? "0" + day : day.ToString();
-            var filePath = $"{basePath}\\Puzzles\\{year}\\Day{dayStr}\\input.txt";
+            var filePath = $"{basePath}/Puzzles/{year}/day{dayStr}/input.txt";
             if (!File.Exists(filePath))
             {
                 var input = await DownloadPuzzleInput(year, day);
