@@ -38,9 +38,18 @@ namespace AdventOfCode.Puzzles._2022.Day19
                     Ore = r.Ore + r.OreRobots,
                     Clay = r.Clay + r.ClayRobots,
                     Obsidian = r.Obsidian + r.ObsidianRobots,
-                    Clay = r.Clay + r.ClayRobots,
-                };
+                    Geode = r.Geode + r.GeodeRobots,
 
+                    OreRobots = r.OreRobots + r.BakingOreRobots,
+                    ClayRobots = r.ClayRobots + r.BakingClayRobots,
+                    ObsidianRobots = r.ObsidianRobots + r.BakingObsidianRobots,
+                    GeodeRobots = r.GeodeRobots + r.BakingGeodeRobots,
+
+                    BakingOreRobots = 0,
+                    BakingClayRobots = 0,
+                    BakingObsidianRobots = 0,
+                    BakingGeodeRobots = 0
+                };
             }
         }
 
