@@ -59,7 +59,7 @@ namespace AdventOfCode.Puzzles._2022.Day15
             
             foreach (var sensor in sensors)
             {
-                foreach (var r in sensor.ranges)
+                foreach (var r in sensor.ranges!)
                 {
                     AddRange(r.Item2, r.Item1);
                 }
@@ -138,7 +138,7 @@ namespace AdventOfCode.Puzzles._2022.Day15
             public int y;
             public Coord? closestBeacon;
             public int manhattanDistance;
-            public List<(int, Range)> ranges;
+            public List<(int, Range)>? ranges;
 
             public Coord2(int x, int y)
             {

@@ -27,7 +27,7 @@ namespace AdventOfCode.Puzzles._2022.Day10
         {
             private long _cycles = 1;
             private long[] _registers;
-            private Inst[] _program;
+            private Inst[]? _program;
 
             private long _nexSignalCheck = 20;
             private long _signalStr;
@@ -55,7 +55,7 @@ namespace AdventOfCode.Puzzles._2022.Day10
 
             public void RunProgram()
             {
-                foreach ( var inst in _program )
+                foreach ( var inst in _program! )
                 {
                     ExecInst(inst);
                 }

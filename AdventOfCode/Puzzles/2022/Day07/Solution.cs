@@ -57,20 +57,20 @@ namespace AdventOfCode.Puzzles._2022.Day07
                 {
                     if (split[2] == "..")
                     {
-                        curr = curr.Parent;
+                        curr = curr!.Parent;
                     }
                     else
                     {
                         var newNode = new TreeNode();
                         nodeReferences.Add(newNode);
                         newNode.Parent = curr;
-                        curr.Children.Add(newNode);
+                        curr!.Children.Add(newNode);
                         curr = newNode;
                     }
                 }
                 else if (split[1] != "ls" && split[0] != "dir")
                 {
-                    curr.FileSize += long.Parse(split[0]);
+                    curr!.FileSize += long.Parse(split[0]);
                 }
             }
 

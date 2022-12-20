@@ -24,7 +24,7 @@ namespace AdventOfCode.Puzzles._2022.Day19
             {
                 ExecuteBluePrint(item, new Resources());
             }
-
+            _result = 1;
             void ExecuteBluePrint(Blueprint b, Resources r, int time = 1)
             {
                 if (time == _time)
@@ -51,6 +51,7 @@ namespace AdventOfCode.Puzzles._2022.Day19
                     BakingGeodeRobots = 0
                 };
             }
+
         }
 
         public void PartTwo(string[] input)

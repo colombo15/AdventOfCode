@@ -18,7 +18,7 @@ namespace AdventOfCode
             var solutionExecutor = new SolutionExecutor(year, day);
             var input = await PuzzleInputService.ReadPuzzleInput();
             var currentDirectory = Directory.GetParent(Environment.CurrentDirectory)!.Parent!.Parent!.FullName;
-            var testFiles = Directory.GetFiles(currentDirectory + $"\\Puzzles\\{year}\\Day{day}\\Tests");
+            var testFiles = Directory.GetFiles(currentDirectory + $"/Puzzles/{year}/Day{day}/Tests");
 
             Console.WriteLine($"{year} - Day {day}\n-------------");
             Console.WriteLine("PART ONE");

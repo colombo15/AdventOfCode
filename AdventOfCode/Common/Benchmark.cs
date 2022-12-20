@@ -74,11 +74,11 @@ namespace AdventOfCode.Common
         public void RunAll()
         {
             // Run all the solutions!
-            for (var i = 0; i < solutions.Count; i += 2)
+            for (var i = 0; i < solutions!.Count; i += 2)
             {
                 var index = (int)Math.Floor(i / 2.0);
 
-                solutions[i].PartOne(inputs[index]);
+                solutions[i].PartOne(inputs![index]);
                 if (!solutions[i].IsPartOneCorrect())
                 {
                     Console.WriteLine("FAIL");

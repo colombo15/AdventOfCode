@@ -45,7 +45,7 @@ namespace AdventOfCode.Puzzles._2022.Day16
                 {
                     var newAvailable = new List<Vertex>(available);
                     newAvailable.Remove(item);
-                    var travelTime = connections[node.Name][item.Name];
+                    var travelTime = connections[node.Name!][item!.Name!];
                     var temp = HighestPreasure(item, newAvailable, t - travelTime - 1, runningTotal);
                     if (temp > highest)
                         highest = temp;
@@ -97,7 +97,7 @@ namespace AdventOfCode.Puzzles._2022.Day16
                 {
                     var newAvailable = new List<Vertex>(available);
                     newAvailable.Remove(item);
-                    var travelTime = connections[node.Name][item.Name];
+                    var travelTime = connections[node.Name!][item.Name!];
                     var temp = HighestPreasure(item, newAvailable, t - travelTime - 1, runningTotal);
                     if (temp > highest)
                         highest = temp;
@@ -173,7 +173,7 @@ namespace AdventOfCode.Puzzles._2022.Day16
                     return GetParentLength(retval);
                 }
 
-                foreach (var edge in retval.Vertices)
+                foreach (var edge in retval.Vertices!)
                 {
                     if (!explored.Contains(edge) && edge.Parent == null)
                     {
@@ -232,9 +232,9 @@ namespace AdventOfCode.Puzzles._2022.Day16
 
         private sealed record class Vertex
         {
-            public string Name { get; set; }
+            public string? Name { get; set; }
             public int Flow { get; set; }
-            public List<Vertex> Vertices { get; set; }
+            public List<Vertex>? Vertices { get; set; }
             public Vertex? Parent { get; internal set; }
 
             public Vertex()
@@ -251,7 +251,7 @@ namespace AdventOfCode.Puzzles._2022.Day16
 
             public void AddChildren(Vertex child)
             {
-                Vertices.Add(child);
+                Vertices!.Add(child);
             }
         }
     }
