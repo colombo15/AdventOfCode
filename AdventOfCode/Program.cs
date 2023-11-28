@@ -1,4 +1,8 @@
 ﻿using AdventOfCode;
+
+// ReSharper disable HeuristicUnreachableCode
+#pragma warning disable CS0162 // Unreachable code detected
+
 Console.WriteLine("\n\n");
 
 /*
@@ -31,31 +35,14 @@ if (mode == Mode.Current)
         day = curr.Day > 25 ? 25 : curr.Day;
     }
 }
+#pragma warning restore CS0162 // Unreachable code detected
 
 if (!Util.InitProject()) return;
 if (!await Util.InitPuzzle(year, day)) return;
+
 var puzzleInput = Util.GetPuzzleInput(year, day);
+var solution = Util.GetSolution(year, day);
 
-var assemblyName = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name;
-if (assemblyName == null)
-{
-    throw new NullReferenceException("Assembly Name not found");
-}
-
-var dayStr = day < 10 ? "0" + day : day.ToString();
-var solutionObjHandle = Activator.CreateInstance(assemblyName, $"AdventOfCode._{year}.Day{dayStr}.Solution");
-if (solutionObjHandle == null)
-{
-    throw new NullReferenceException($"Solution class not found for {year} - Day{day}");
-}
-
-var solutionObj = solutionObjHandle.Unwrap();
-if (solutionObj == null)
-{
-    throw new NullReferenceException("Solution not Unwrapped properly");
-}
-
-var solution = (ISolution)solutionObj;
 solution.Puzzle1(puzzleInput);
 solution.Puzzle2(puzzleInput);
     

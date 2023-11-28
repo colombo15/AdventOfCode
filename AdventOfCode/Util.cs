@@ -95,6 +95,31 @@ public static class Util
         return File.ReadAllText(inputFile).Split('\n');
     }
 
+    public static ISolution GetSolution(int year, int day)
+    {
+        var assemblyName = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name;
+        if (assemblyName == null)
+        {
+            throw new NullReferenceException("Assembly Name not found");
+        }
+
+        // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+        var dayStr = day < 10 ? $"0{day}" : day.ToString();
+        var solutionObjHandle = Activator.CreateInstance(assemblyName, $"AdventOfCode._{year}.Day{dayStr}.Solution");
+        if (solutionObjHandle == null)
+        {
+            throw new NullReferenceException($"Solution class not found for {year} - Day{day}");
+        }
+
+        var solutionObj = solutionObjHandle.Unwrap();
+        if (solutionObj == null)
+        {
+            throw new NullReferenceException("Solution not Unwrapped properly");
+        }
+
+        return (ISolution)solutionObj;
+    }
+    
     private static async Task<bool> DownloadPuzzleInput(int year, int day)
     {
         if (day is > 25 or < 1) return false;
