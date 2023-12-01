@@ -62,5 +62,3 @@ timer.Stop();
 var puzzle2Time = timer.Elapsed;
 
 Console.WriteLine($"\n\nPart 1 time: {puzzle1Time}\nPart 2 time: {puzzle2Time}\n");
-
-Console.Read();
