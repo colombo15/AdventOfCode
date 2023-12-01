@@ -16,13 +16,15 @@ public partial class Solution : ISolution
 
 	public void Puzzle2(string[] input)
 	{
-		var total = (
-			from i in input 
-			let first = Part2Regex_FromFront().Matches(i).First().Value 
-			let last = Part2Regex_FromBack().Matches(i).First().Value 
-			select int.Parse(Convert(first) + Convert(last))
-			).Sum();
-
+		var total = input
+			.Select(i =>
+			{
+				var first = Part2Regex_FromFront().Matches(i).First().Value;
+				var last = Part2Regex_FromBack().Matches(i).First().Value;
+				return int.Parse(Convert(first) + Convert(last));
+			})
+			.Sum();
+		
 		Console.WriteLine(total);
 	}
 
