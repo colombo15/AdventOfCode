@@ -35,10 +35,10 @@ public partial class Solution : ISolution
     [GeneratedRegex("[0-9]")]
     private static partial Regex Part1Regex();
 
-    [GeneratedRegex("([0-9]|one|two|three|four|five|six|seven|eight|nine)")]
+    [GeneratedRegex("[0-9]|one|two|three|four|five|six|seven|eight|nine")]
     private static partial Regex Part2Regex_FromFront();
 
-    [GeneratedRegex("([0-9]|one|two|three|four|five|six|seven|eight|nine)", RegexOptions.RightToLeft)]
+    [GeneratedRegex("[0-9]|one|two|three|four|five|six|seven|eight|nine", RegexOptions.RightToLeft)]
     private static partial Regex Part2Regex_FromBack();
 
     private static string Convert(string s)
