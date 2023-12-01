@@ -4,29 +4,29 @@ namespace AdventOfCode._2023.Day01;
 
 public partial class Solution : ISolution
 {
-	public void Puzzle1(string[] input)
-	{
-		var total = input
-			.Select(i => Part1Regex().Matches(i))
-			.Select(matches => int.Parse(matches.First().Value + matches.Last().Value))
-			.Sum();
+    public void Puzzle1(string[] input)
+    {
+        var total = input
+            .Select(i => Part1Regex().Matches(i))
+            .Select(matches => int.Parse(matches.First().Value + matches.Last().Value))
+            .Sum();
 
-		Console.WriteLine(total);
-	}
+        Console.WriteLine(total);
+    }
 
-	public void Puzzle2(string[] input)
-	{
-		var total = input
-			.Select(i =>
-			{
-				var first = Part2Regex_FromFront().Matches(i).First().Value;
-				var last = Part2Regex_FromBack().Matches(i).First().Value;
-				return int.Parse(Convert(first) + Convert(last));
-			})
-			.Sum();
-		
-		Console.WriteLine(total);
-	}
+    public void Puzzle2(string[] input)
+    {
+        var total = input
+            .Select(i =>
+            {
+                var first = Part2Regex_FromFront().Matches(i).First().Value;
+                var last = Part2Regex_FromBack().Matches(i).First().Value;
+                return int.Parse(Convert(first) + Convert(last));
+            })
+            .Sum();
+        
+        Console.WriteLine(total);
+    }
 
     [GeneratedRegex("[0-9]")]
     private static partial Regex Part1Regex();
