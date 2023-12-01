@@ -14,7 +14,7 @@ Console.WriteLine("\n\n");
 
 // Change the execution mode to handle different scenarios
 //const Mode mode = Mode.Current;
-const Mode mode = Mode.Specific;
+const Mode mode = Mode.Current;
 
 // When mode is set to Specific, these values will be used
 // ReSharper disable once RedundantAssignment
