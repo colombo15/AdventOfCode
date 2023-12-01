@@ -172,3 +172,9 @@ public static class Util
         return true;
     }
 }
+
+public enum Mode
+{
+    Current,
+    Specific
+}

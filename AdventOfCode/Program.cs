@@ -1,4 +1,5 @@
 ﻿using AdventOfCode;
+using System.Diagnostics;
 
 // ReSharper disable HeuristicUnreachableCode
 #pragma warning disable CS0162 // Unreachable code detected
@@ -44,6 +45,22 @@ if (!await Util.InitPuzzle(year, day)) return;
 var puzzleInput = Util.GetPuzzleInput(year, day);
 var solution = Util.GetSolution(year, day);
 
+var timer = new Stopwatch();
+timer.Start();
+
 solution.Puzzle1(puzzleInput);
+timer.Stop();
+
+var puzzle1Time = timer.Elapsed;
+
+timer.Reset();
+
+timer.Start();
 solution.Puzzle2(puzzleInput);
-    
+timer.Stop();
+
+var puzzle2Time = timer.Elapsed;
+
+Console.WriteLine($"\n\nPart 1 time: {puzzle1Time}\nPart 2 time: {puzzle2Time}\n");
+
+Console.Read();
