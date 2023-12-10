@@ -53,7 +53,6 @@ public partial class Solution : ISolution
         }
 
         var map = new List<((long, long)[], (long, long)[])>();
-        var locations = -1;
 
         for (var i = 0; i < input.Length; i++)
         {
