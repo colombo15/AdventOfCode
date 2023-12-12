@@ -19,7 +19,7 @@ const Mode mode = Mode.Current;
 
 // When mode is set to Specific, these values will be used
 // ReSharper disable once RedundantAssignment
-var year = 2022;
+var year = 2023;
 // ReSharper disable once RedundantAssignment
 var day = 3;
 
