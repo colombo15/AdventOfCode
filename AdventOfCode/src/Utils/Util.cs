@@ -1,21 +1,19 @@
 using System.Configuration;
-using System.Diagnostics.CodeAnalysis;
 using System.Net;
 
 namespace AdventOfCode;
 
-[SuppressMessage("ReSharper", "InvertIf")]
 public static class Util
 {
     private static readonly string? ProjDir = Directory.GetParent(Environment.CurrentDirectory)?.Parent?.Parent?.FullName;
-    
+
     /// <summary>
     /// Initializes the project, will not do anything if it has already ran
     /// </summary>
     public static bool InitProject()
     {
         var appConfigPath = $"{ProjDir}/app.config";
-        
+
         // Create app.config if it does not exist
         if (!File.Exists(appConfigPath))
         {
@@ -30,10 +28,10 @@ public static class Util
             Console.WriteLine($"\napp.config file created, please fill it in to continue\n");
             return false;
         }
-        
+
         return true;
     }
-    
+
     /// <summary>
     /// Downloads the puzzle input for the giver year and day
     /// </summary>
@@ -45,17 +43,17 @@ public static class Util
         // Create /inputs folder if it does not exist
         _ = Directory.CreateDirectory(inputsDir);
         if (!await DownloadPuzzleInput(year, day)) return false;
-        
+
         var srcDir = $"{ProjDir}/src";
         _ = Directory.CreateDirectory(srcDir);
-        
+
         var yearDir = $"{srcDir}/{year}";
         _ = Directory.CreateDirectory(yearDir);
-        
+
         var dayStr = day < 10 ? "0" + day : day.ToString();
         var dayDir = $"{yearDir}/Day{dayStr}";
         _ = Directory.CreateDirectory(dayDir);
-        
+
         var solutionFile = $"{dayDir}/Solution.cs";
         if (!File.Exists(solutionFile))
         {
@@ -74,11 +72,11 @@ public static class Util
             await sw.WriteLineAsync($"\t\tConsole.WriteLine(\"{year} - Day {dayStr} - Part 2\");");
             await sw.WriteLineAsync("\t}");
             await sw.WriteLineAsync("}");
-            
+
             Console.WriteLine($"Solution.cs file created for {year} Day{dayStr}");
             return false;
         }
-        
+
         return true;
     }
 
@@ -97,29 +95,16 @@ public static class Util
 
     public static ISolution GetSolution(int year, int day)
     {
-        var assemblyName = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name;
-        if (assemblyName == null)
-        {
-            throw new NullReferenceException("Assembly Name not found");
-        }
+        var assemblyName = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name
+            ?? throw new NullReferenceException("Assembly Name not found");
 
         // ReSharper disable once ConditionIsAlwaysTrueOrFalse
         var dayStr = day < 10 ? $"0{day}" : day.ToString();
-        var solutionObjHandle = Activator.CreateInstance(assemblyName, $"AdventOfCode._{year}.Day{dayStr}.Solution");
-        if (solutionObjHandle == null)
-        {
-            throw new NullReferenceException($"Solution class not found for {year} - Day{day}");
-        }
-
+        var solutionObjHandle = Activator.CreateInstance(assemblyName, $"AdventOfCode._{year}.Day{dayStr}.Solution") ?? throw new NullReferenceException($"Solution class not found for {year} - Day{day}");
         var solutionObj = solutionObjHandle.Unwrap();
-        if (solutionObj == null)
-        {
-            throw new NullReferenceException("Solution not Unwrapped properly");
-        }
-
-        return (ISolution)solutionObj;
+        return solutionObj == null ? throw new NullReferenceException("Solution not Unwrapped properly") : (ISolution)solutionObj;
     }
-    
+
     private static async Task<bool> DownloadPuzzleInput(int year, int day)
     {
         if (day is > 25 or < 1) return false;
@@ -130,14 +115,14 @@ public static class Util
         {
             return true;
         }
-        
+
         var authToken = ConfigurationManager.AppSettings["auth-token"];
         if (string.IsNullOrEmpty(authToken))
         {
             Console.WriteLine($"\nERROR: auth-token is null or empty, please fill it in in app.config\n");
             return false;
         }
-        
+
         var email = ConfigurationManager.AppSettings["email"];
         // ReSharper disable once InvertIf
         if (string.IsNullOrEmpty(email))
@@ -151,7 +136,7 @@ public static class Util
 
         using var handler = new HttpClientHandler();
         handler.CookieContainer = cookieContainer;
-        
+
         using var client = new HttpClient(handler);
         client.BaseAddress = baseAddress;
 
@@ -165,7 +150,7 @@ public static class Util
 
         var input = await response.Content.ReadAsStringAsync();
         input = input.TrimEnd('\n');
-        
+
         File.Create(inputFile).Close();
         await File.WriteAllTextAsync(inputFile, input);
 
