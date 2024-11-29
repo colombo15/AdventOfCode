@@ -7,10 +7,10 @@ public class Solution : ISolution
         Console.WriteLine(new Graph(input).FindSmallestHeatLoss());
     }
 
-	public void Puzzle2(string[] input)
+    public void Puzzle2(string[] input)
 	{
-		Console.WriteLine("2023 - Day 17 - Part 2");
-	}
+        Console.WriteLine(new Graph(input).FindSmallestHeatLoss2());
+    }
 
     public sealed class Graph
     {
@@ -22,9 +22,9 @@ public class Solution : ISolution
         {
             _graph = new Vertex[input[0].Length, input.Length];
 
-            for (var i = 0; i < input.Length; i++)
+            for (var i = 0; i < input[0].Length; i++)
             {
-                for(var j = 0; j < input[i].Length; j++)
+                for(var j = 0; j < input.Length; j++)
                 {
                     _graph[i, j] = new Vertex(input[j][i] - 48);
                 }
@@ -59,21 +59,68 @@ public class Solution : ISolution
 
         public int FindSmallestHeatLoss()
         {
+            var cache = new HashSet<(Vertex vertex, Direction from, int count)>();
             var priorityQueue = new PriorityQueue<(Vertex vertex, Direction from, int count), int>();
             _root.Estimate = 0;
-            priorityQueue.Enqueue((_root, Direction.Down, 0), _root.Estimate);
-            while(priorityQueue.TryDequeue(out var tuple, out var priority))
+            priorityQueue.Enqueue((_root, Direction.Left, 0), _root.Estimate);
+            while (priorityQueue.TryDequeue(out var tuple, out var estimate))
             {
                 var (ptr, fromDirection, currCount) = tuple;
-                if (ptr.Explored) 
-                    continue;
-                ptr.Explored = true;
                 foreach (var (neighbor, toDirection) in ptr.Neighbors)
                 {
+                    if (fromDirection == toDirection) continue;
                     var nextCount = Opposite(fromDirection) == toDirection ? currCount + 1 : 1;
-                    if (neighbor.Explored || nextCount > 3) continue;
-                    neighbor.SetEstimate(ptr.Estimate + neighbor.Weight);
-                    priorityQueue.Enqueue((neighbor, Opposite(toDirection), nextCount), neighbor.Estimate);
+                    if (nextCount > 3) continue;
+                    var nextEstimate = estimate + neighbor.Weight;
+                    var cacheCheck = (neighbor, Opposite(toDirection), nextCount);
+                    if (cache.Contains(cacheCheck)) continue;
+                    cache.Add(cacheCheck);
+                    neighbor.SetEstimate(nextEstimate);
+                    priorityQueue.Enqueue((neighbor, Opposite(toDirection), nextCount), nextEstimate);
+                }
+            }
+            return _goal.Estimate;
+        }
+
+        public int FindSmallestHeatLoss2()
+        {
+            var cache = new HashSet<(Vertex vertex, Direction from, int count)>();
+            var priorityQueue = new PriorityQueue<(Vertex vertex, Direction from, int count), int>();
+            _root.Estimate = 0;
+            priorityQueue.Enqueue((_root, Direction.Left, 0), _root.Estimate);
+            while (priorityQueue.TryDequeue(out var tuple, out var estimate))
+            {
+                var (ptr, fromDirection, currCount) = tuple;
+                foreach (var (n, toDirection) in ptr.Neighbors)
+                {
+                    if (fromDirection == toDirection) continue;
+                    var nextCount = Opposite(fromDirection) == toDirection ? currCount + 1 : 1;
+                    if (nextCount > 10) continue;
+                    var neighbor = n;
+                    var heat = 0;
+                    var cancel = false;
+                    if (nextCount == 1)
+                    {
+                        for (var i = 0; i < 3; i++)
+                        {
+                            heat += neighbor.Weight;
+                            var tempN = neighbor.GetNeighbor(toDirection);
+                            if (tempN!.Value.vertex is null)
+                            {
+                                cancel = true;
+                                break;
+                            }
+                            neighbor = tempN.Value.vertex;
+                        }
+                        nextCount = 4;
+                    }
+                    if (cancel) continue;
+                    var nextEstimate = estimate + neighbor.Weight + heat;
+                    var cacheCheck = (neighbor, Opposite(toDirection), nextCount);
+                    if (cache.Contains(cacheCheck)) continue;
+                    cache.Add(cacheCheck);
+                    neighbor.SetEstimate(nextEstimate);
+                    priorityQueue.Enqueue((neighbor, Opposite(toDirection), nextCount), nextEstimate);
                 }
             }
             return _goal.Estimate;
@@ -87,6 +134,7 @@ public class Solution : ISolution
             public List<(Vertex vertex, Direction direction)> Neighbors { get; private set; } = [];
             public void AddNeighbor(Vertex v, Direction d) => Neighbors.Add((v, d));
             public void SetEstimate(int val) => Estimate = val < Estimate ? val : Estimate;
+            public (Vertex vertex, Direction direction)? GetNeighbor(Direction direction) => Neighbors.FirstOrDefault(x => x.direction == direction);
         }
 
         private enum Direction
