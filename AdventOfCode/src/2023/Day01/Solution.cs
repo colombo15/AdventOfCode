@@ -8,25 +8,11 @@ public partial class Solution : ISolution
     {
         var total = 0;
 
-        foreach (var item in input)
+        foreach (var i in input)
         {
-            for (var i = 0; i < item.Length; i++)
-            {
-                if (item[i] <= 57 && item[i] >= 49)
-                {
-                    total += (item[i] - 48) * 10;
-                    break;
-                }
-            }
-
-            for (var i = item.Length - 1; i >= 0; i--)
-            {
-                if (item[i] <= 57 && item[i] >= 49)
-                {
-                    total += (item[i] - 48);
-                    break;
-                }
-            }
+            var first = Part1Regex_FromFront().Match(i).Value;
+            var last = Part1Regex_FromBack().Match(i).Value;
+            total += (Convert(first) * 10) + Convert(last);
         }
 
         Console.WriteLine(total);
@@ -45,6 +31,12 @@ public partial class Solution : ISolution
         
         Console.WriteLine(total);
     }
+
+    [GeneratedRegex("[0-9]")]
+    private static partial Regex Part1Regex_FromFront();
+
+    [GeneratedRegex("[0-9]", RegexOptions.RightToLeft)]
+    private static partial Regex Part1Regex_FromBack();
 
     [GeneratedRegex("[0-9]|one|two|three|four|five|six|seven|eight|nine")]
     private static partial Regex Part2Regex_FromFront();

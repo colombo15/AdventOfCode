@@ -10,8 +10,8 @@
 // Change the execution mode to handle different scenarios
 const Mode mode = Mode.Specific;
 
-// When mode is set to Specific, these values will be used
+// When mode is set to Mode.Specific, these values will be used
 var year = 2023;
-var day = 1;
+var day = 17;
 
 await PuzzleRunner.Run(mode, year, day);
