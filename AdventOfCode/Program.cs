@@ -8,7 +8,7 @@
  */
 
 // Change the execution mode to handle different scenarios
-const Mode mode = Mode.Specific;
+const Mode mode = Mode.Current;
 
 // When mode is set to Mode.Specific, these values will be used
 var year = 2023;
