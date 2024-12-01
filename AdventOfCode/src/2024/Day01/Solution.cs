@@ -4,25 +4,17 @@ public class Solution : ISolution
 {
 	public void Puzzle1(string[] input)
 	{
-		var total = 0;
 		var l1 = new int[input.Length];
 		var l2 = new int[input.Length];
-
 		for(var i = 0; i < input.Length; i++)
 		{
-			var split = input[i].Split("   ").Select(int.Parse).ToArray();
-			l1[i] = split[0];
-			l2[i] = split[1];
+			var split = input[i].Split("   ").Select(int.Parse);
+			l1[i] = split.First();
+			l2[i] = split.Last();
 		}
-
 		Array.Sort(l1);
 		Array.Sort(l2);
-
-		for (var i = 0; i < l1.Length; i++)
-		{
-			total += Math.Abs(l1[i] - l2[i]);
-		}
-
+		var total = l1.Zip(l2).Aggregate(0, (total, tuple) => total + Math.Abs(tuple.First - tuple.Second));
 		Console.WriteLine(total);
 	}
 
