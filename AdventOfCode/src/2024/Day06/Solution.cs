@@ -7,7 +7,7 @@ public class Solution : ISolution
 	public void Puzzle1(string[] input)
 	{
         _grid = new Grid(input);
-		Console.WriteLine(_grid.MoveGuard() + " : 4967");
+		Console.WriteLine(_grid.MoveGuard());
 	}
 
 	public void Puzzle2(string[] input)
