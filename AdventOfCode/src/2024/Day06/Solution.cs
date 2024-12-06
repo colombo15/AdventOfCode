@@ -1,10 +1,8 @@
-using static System.Net.Mime.MediaTypeNames;
-
 namespace AdventOfCode._2024.Day06;
 
 public class Solution : ISolution
 {
-    private Grid _grid;
+    private Grid? _grid;
 
 	public void Puzzle1(string[] input)
 	{
@@ -14,7 +12,7 @@ public class Solution : ISolution
 
 	public void Puzzle2(string[] input)
 	{
-        Console.WriteLine(_grid.MoveGuard2());
+        Console.WriteLine(_grid!.MoveGuard2());
     }
 
 	private class Grid
